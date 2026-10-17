@@ -1,26 +1,20 @@
-<?php 
-session_start();
-   
-if(!isset($_SESSION["userid"])) {
-    header("Location: login.php");
-    exit();
-} else {
-    $userId = $_SESSION["userid"];
-    $userUid = $_SESSION["useruid"];
-}
+<?php
+require_once __DIR__ . "/includes/user-auth.inc.php";
+$userId = $_SESSION["userid"];
+$userUid = $_SESSION["useruid"];
 
 //Users  
-include "classes/user.classes.php";
-include "classes/user-view.classes.php";
+include_once "classes/user.classes.php";
+include_once "classes/user-view.classes.php";
 
 $viewUser = new UserView();
 $user = $viewUser->showProfile($userId);
 
 
 // Earnings   
-include "classes/dbh.classes.php";
-include "classes/earnings.classes.php";
-include "classes/earnings-view.classes.php";
+include_once "classes/dbh.classes.php";
+include_once "classes/earnings.classes.php";
+include_once "classes/earnings-view.classes.php";
 
 ?>
 <!doctype html>

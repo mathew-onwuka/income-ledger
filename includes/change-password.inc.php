@@ -1,15 +1,10 @@
 <?php
 
-session_start();
+require_once __DIR__ . "/user-auth.inc.php";
 
-if(!isset($_SESSION["userid"])){
-    header("location: ../login.php");
-    exit();
-}
-
-include "../classes/dbh.classes.php";
-include "../classes/user.classes.php";
-include "../classes/user-contr.classes.php";
+include_once "../classes/dbh.classes.php";
+include_once "../classes/user.classes.php";
+include_once "../classes/user-contr.classes.php";
 
 $user = new UserContr($_SESSION["userid"]);
 

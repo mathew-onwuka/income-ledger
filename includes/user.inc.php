@@ -1,21 +1,16 @@
 <?php
-session_start();
-//Check that the user is logged in
-if(!isset($_SESSION["userid"])){
-    header("location: ../login.php");
-    exit();
-}
+require_once __DIR__ . "/user-auth.inc.php";
 
 
 if($_SERVER["REQUEST_METHOD"]=="POST"){
 
     $userId = $_SESSION["userid"];
 
-    include "../classes/dbh.classes.php";
-    include "../classes/user.classes.php";
-    include "../classes/user-view.classes.php";
-    include "../classes/user-contr.classes.php";
-    include "../classes/ImageUpload.php";
+    include_once "../classes/dbh.classes.php";
+    include_once "../classes/user.classes.php";
+    include_once "../classes/user-view.classes.php";
+    include_once "../classes/user-contr.classes.php";
+    include_once "../classes/ImageUpload.php";
 
     // Fetch current user first
     $view = new UserView();

@@ -3,11 +3,7 @@
 session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-    if (!isset($_SESSION['userid'])) {
-        header("Location: ../login.php");
-        exit();
-    }
+    require_once __DIR__ . "/user-auth.inc.php";
 
     if (!isset($_POST['earnings_id']) || !is_numeric($_POST['earnings_id'])) {
         header("Location: ../earnings-list.php?error=invalidid");
@@ -17,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $userId = $_SESSION['userid'];
     $earnings_id = (int)$_POST['earnings_id'];
 
-    include "../classes/dbh.classes.php";
+    include_once "../classes/dbh.classes.php";
     include "../classes/earnings.classes.php";
     include "../classes/earnings-contr.classes.php";
 

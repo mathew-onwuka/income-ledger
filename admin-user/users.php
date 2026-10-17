@@ -82,6 +82,17 @@ if ($search !== '') {
 
 $totalPages = ceil($totalUsers / $limit);
 
+$statusActionErrors = [
+    'invalidtransition' => 'That account status change is not allowed. Refresh the page and try again.',
+    'invaliduser' => 'The selected user could not be found.',
+    'invalidaction' => 'The requested account status action is invalid.',
+    'stmtfailed' => 'The account status could not be updated. Please try again.',
+];
+$statusActionErrorCode = $_GET['error'] ?? '';
+$statusActionError = is_string($statusActionErrorCode)
+    ? ($statusActionErrors[$statusActionErrorCode] ?? null)
+    : null;
+
 ?>
 
 
@@ -89,6 +100,12 @@ $totalPages = ceil($totalUsers / $limit);
 <!-- ==================================================
      SEARCH AND FILTER
 ================================================== -->
+
+<?php if ($statusActionError !== null): ?>
+    <div class="alert alert-danger" role="alert">
+        <?php echo htmlspecialchars($statusActionError, ENT_QUOTES, 'UTF-8'); ?>
+    </div>
+<?php endif; ?>
 
 <div>
 

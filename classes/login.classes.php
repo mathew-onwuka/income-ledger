@@ -18,9 +18,17 @@ class Login extends Dbh {
             exit();
         }
 
-        //User Status Check
-        switch($user["account_status"])
-        {
+        // Verify password
+        if (!password_verify($pwd, $user["users_pwd"])) {
+            $stmt = null;
+            header("location: ../login.php?error=wrongpassword");
+            exit();
+        }
+
+        switch ($user["account_status"]) {
+            case "active":
+                break;
+
             case "inactive":
                 header("location: ../login.php?error=accountinactive");
                 exit();
@@ -33,15 +41,9 @@ class Login extends Dbh {
                 header("location: ../login.php?error=accountdeleted");
                 exit();
 
-            case "active":
-                break;
-        }
-
-        // Verify password
-        if (!password_verify($pwd, $user["users_pwd"])) {
-            $stmt = null;
-            header("location: ../login.php?error=wrongpassword");
-            exit();
+            default:
+                header("location: ../login.php?error=invalidaccountstatus");
+                exit();
         }
 
         // Password is correct

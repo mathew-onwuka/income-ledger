@@ -3,11 +3,7 @@
 session_start();
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
-
-  if (!isset($_SESSION['userid'])) {
-      header("Location: ../login.php");
-      exit();
-  }
+    require_once __DIR__ . "/user-auth.inc.php";
 
     $userId = $_SESSION["userid"];
     $earnings_description = trim($_POST['earnings_description']);
@@ -16,7 +12,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $reg_date = trim($_POST['reg_date']);
 
     //Instantiate earnings classes
-    include "../classes/dbh.classes.php";
+    include_once "../classes/dbh.classes.php";
     include "../classes/earnings.classes.php";
     include "../classes/earnings-contr.classes.php";
 
@@ -32,5 +28,3 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     header("Location: ../add-earnings.php");
     exit();
 }
-
-

@@ -2,6 +2,21 @@
 
 class User extends Dbh{
 
+    protected function getAccountStatus($userid)
+    {
+        $stmt = $this->connect()->prepare("SELECT account_status FROM users WHERE users_id = ?");
+
+        if (!$stmt->execute([$userid])) {
+            $stmt = null;
+            throw new RuntimeException("Unable to retrieve user account status.");
+        }
+
+        $status = $stmt->fetchColumn();
+        $stmt = null;
+
+        return $status === false ? null : $status;
+    }
+
     protected function getProfile($userid)
     {
         $stmt = $this->connect()->prepare("SELECT firstname, lastname, phone, user_address, profile_photo, gender, date_of_birth, city, user_state, country, postal_code, users_email FROM users WHERE users_id = ?");

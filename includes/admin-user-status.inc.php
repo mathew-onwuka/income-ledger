@@ -8,7 +8,7 @@ if (!isset($_SESSION["admin_id"])) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-    header("location: ../admin/users.php");
+    header("location: ../admin-user/users.php");
     exit();
 }
 
@@ -19,7 +19,7 @@ $userid = (int)($_POST["userid"] ?? 0);
 $action = $_POST["action"] ?? "";
 
 if ($userid <= 0) {
-    header("location: ../admin/users.php?error=invaliduser");
+    header("location: ../admin-user/users.php?error=invaliduser");
     exit();
 }
 
@@ -32,29 +32,34 @@ $admin = new AdminContr($adminId, $adminRole);
 switch ($action) {
 
     case "activate":
-        $admin->activateUserAccount($userid);
+        $updated = $admin->activateUserAccount($userid);
         break;
 
     case "deactivate":
-        $admin->deactivateUserAccount($userid);
+        $updated = $admin->deactivateUserAccount($userid);
         break;
 
     case "suspend":
-        $admin->suspendUserAccount($userid);
+        $updated = $admin->suspendUserAccount($userid);
         break;
 
     case "delete":
-        $admin->deleteUserAccount($userid);
+        $updated = $admin->deleteUserAccount($userid);
         break;
 
     case "restore":
-        $admin->restoreUserAccount($userid);
+        $updated = $admin->restoreUserAccount($userid);
         break;
 
     default:
-        header("location: ../admin/users.php?error=invalidaction");
+        header("location: ../admin-user/users.php?error=invalidaction");
         exit();
 }
 
-header("location: ../admin/users.php?error=none");
+if (!$updated) {
+    header("location: ../admin-user/users.php?error=invalidtransition");
+    exit();
+}
+
+header("location: ../admin-user/users.php?error=none");
 exit();

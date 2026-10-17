@@ -1,3 +1,20 @@
+<?php
+$loginErrors = [
+    "none" => "Your account is ready. Sign in to continue.",
+    "emptyinput" => "Enter your username or email and password.",
+    "usernotfound" => "The username or password is incorrect.",
+    "wrongpassword" => "The username or password is incorrect.",
+    "accountinactive" => "This account is inactive. Contact an administrator for help.",
+    "accountsuspended" => "This account is suspended. Contact an administrator for help.",
+    "accountdeleted" => "This account has been deleted. Contact an administrator if you believe this is a mistake.",
+    "invalidaccountstatus" => "This account has an invalid status and cannot sign in. Contact an administrator.",
+    "stmtfailed" => "Sign-in could not be completed. Please try again.",
+];
+$loginErrorCode = $_GET["error"] ?? "";
+$loginError = is_string($loginErrorCode)
+    ? ($loginErrors[$loginErrorCode] ?? null)
+    : null;
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -269,6 +286,21 @@
 		font-weight: 600;
 	}
 	.footer-line a:hover{ text-decoration: underline; }
+	.auth-message{
+		margin: 0 0 18px;
+		padding: 12px 14px;
+		border: 1px solid rgba(240, 120, 120, 0.35);
+		border-radius: 8px;
+		background: rgba(180, 45, 45, 0.12);
+		color: #ffd0d0;
+		font-size: 13px;
+		line-height: 1.5;
+	}
+	.auth-message.success{
+		border-color: rgba(125, 190, 140, 0.35);
+		background: rgba(45, 150, 80, 0.12);
+		color: #c8f0d0;
+	}
 
 	@media (max-width: 900px){
 		.brand-panel{ display: none; }
@@ -301,6 +333,11 @@
 			<div class="kicker">Welcome back</div>
 			<h2>Sign in</h2>
 			<p class="sub">Enter your credentials to access your dashboard.</p>
+			<?php if ($loginError !== null): ?>
+				<div class="auth-message<?php echo $loginErrorCode === "none" ? " success" : ""; ?>" role="alert">
+					<?php echo htmlspecialchars($loginError, ENT_QUOTES, "UTF-8"); ?>
+				</div>
+			<?php endif; ?>
 
 			<form method="post" action="includes/login.inc.php">
 				<div class="field">

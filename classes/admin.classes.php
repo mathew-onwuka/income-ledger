@@ -112,7 +112,7 @@ class Admin extends Dbh
 
         if (!$stmt->execute()) {
             $stmt = null;
-            header("location: users.php?error=stmtfailed");
+            header("location: ../admin-user/users.php?error=stmtfailed");
             exit();
         }
 
@@ -136,7 +136,7 @@ class Admin extends Dbh
 
         if (!$stmt->execute()) {
             $stmt = null;
-            header("location: users.php?error=stmtfailed");
+            header("location: ../admin-user/users.php?error=stmtfailed");
             exit();
         }
 
@@ -181,7 +181,7 @@ class Admin extends Dbh
 
         if (!$stmt->execute()) {
             $stmt = null;
-            header("location: users.php?error=stmtfailed");
+            header("location: ../admin-user/users.php?error=stmtfailed");
             exit();
         }
 
@@ -204,7 +204,7 @@ class Admin extends Dbh
 
         if (!$stmt->execute([$status])) {
             $stmt = null;
-            header("location: users.php?error=stmtfailed");
+            header("location: ../admin-user/users.php?error=stmtfailed");
             exit();
         }
 
@@ -260,7 +260,7 @@ class Admin extends Dbh
 
         if (!$stmt->execute()) {
             $stmt = null;
-            header("location: users.php?error=stmtfailed");
+            header("location: ../admin-user/users.php?error=stmtfailed");
             exit();
         }
 
@@ -286,11 +286,12 @@ class Admin extends Dbh
                 activated_at = NOW(),
                 suspended_at = NULL
             WHERE users_id = ?
+                AND account_status IN ('inactive', 'suspended')
         ");
 
         if (!$stmt->execute([$userid])) {
             $stmt = null;
-            header("location: users.php?error=stmtfailed");
+            header("location: ../admin-user/users.php?error=stmtfailed");
             exit();
         }
 
@@ -312,13 +313,15 @@ class Admin extends Dbh
     {
         $stmt = $this->connect()->prepare("UPDATE users
             SET
-                account_status = 'inactive'
+                account_status = 'inactive',
+                suspended_at = NULL
             WHERE users_id = ?
+                AND account_status IN ('active', 'suspended')
         ");
 
         if (!$stmt->execute([$userid])) {
             $stmt = null;
-            header("location: users.php?error=stmtfailed");
+            header("location: ../admin-user/users.php?error=stmtfailed");
             exit();
         }
 
@@ -343,11 +346,12 @@ class Admin extends Dbh
                 account_status = 'suspended',
                 suspended_at = NOW()
             WHERE users_id = ?
+                AND account_status IN ('active', 'inactive')
         ");
 
         if (!$stmt->execute([$userid])) {
             $stmt = null;
-            header("location: users.php?error=stmtfailed");
+            header("location: ../admin-user/users.php?error=stmtfailed");
             exit();
         }
 
@@ -370,13 +374,15 @@ class Admin extends Dbh
         $stmt = $this->connect()->prepare("UPDATE users
             SET
                 account_status = 'deleted',
-                deleted_at = NOW()
+                deleted_at = NOW(),
+                suspended_at = NULL
             WHERE users_id = ?
+                AND account_status IN ('active', 'inactive', 'suspended')
         ");
 
         if (!$stmt->execute([$userid])) {
             $stmt = null;
-            header("location: users.php?error=stmtfailed");
+            header("location: ../admin-user/users.php?error=stmtfailed");
             exit();
         }
 
@@ -403,11 +409,12 @@ class Admin extends Dbh
                 suspended_at = NULL,
                 activated_at = NOW()
             WHERE users_id = ?
+                AND account_status = 'deleted'
         ");
 
         if (!$stmt->execute([$userid])) {
             $stmt = null;
-            header("location: users.php?error=stmtfailed");
+            header("location: ../admin-user/users.php?error=stmtfailed");
             exit();
         }
 
