@@ -15,6 +15,9 @@ $user = $viewUser->showProfile($userId);
 include_once "classes/dbh.classes.php";
 include_once "classes/earnings.classes.php";
 include_once "classes/earnings-view.classes.php";
+include_once "classes/settings.php";
+$appSettings = (new Settings())->getAppSettings();
+$appName = $appSettings['values']['app_name'];
 
 ?>
 <!doctype html>
@@ -25,7 +28,7 @@ include_once "classes/earnings-view.classes.php";
 	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title><?php echo $page_title; ?></title>
+	<title><?php echo htmlspecialchars((string)$page_title, ENT_QUOTES, 'UTF-8'); ?></title>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
@@ -66,7 +69,7 @@ include_once "classes/earnings-view.classes.php";
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="#" class="simple-text">
-                    EARN-NOW
+                    <?php echo htmlspecialchars($appName, ENT_QUOTES, 'UTF-8'); ?>
                 </a>
             </div>
             <div class="logo">

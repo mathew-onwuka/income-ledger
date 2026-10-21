@@ -351,62 +351,24 @@ if ($filter === 'custom') {
     $queryParams['end_date'] = $endDate;
 }
 
+$page_title = 'Global earnings';
+$page_description = 'Review and filter recorded earnings across all user accounts.';
 ?>
 
-<h1>Global Earnings</h1>
+<?php require __DIR__ . '/layout-header.php'; ?>
 
-<h2>Earnings Summary</h2>
-
-<p>
-    Total Earnings:
-    <?php
-    echo number_format(
-        (float)$earningsStats['total_earnings'],
-        2
-    );
-    ?>
-</p>
-
-<p>
-    Number of Records:
-    <?php
-    echo (int)$earningsStats['total_earnings_records'];
-    ?>
-</p>
-
-<p>
-    Average Earning:
-    <?php
-    echo number_format(
-        (float)$earningsStats['average_earning'],
-        2
-    );
-    ?>
-</p>
-
-<p>
-    Highest Earning:
-    <?php
-    echo number_format(
-        (float)$earningsStats['highest_earning'],
-        2
-    );
-    ?>
-</p>
-
-<p>
-    Lowest Earning:
-    <?php
-    echo number_format(
-        (float)$earningsStats['lowest_earning'],
-        2
-    );
-    ?>
-</p>
+<h2>Earnings summary</h2>
+<div class="admin-summary-grid">
+    <p>Total earnings<strong><?php echo number_format((float)$earningsStats['total_earnings'], 2); ?></strong></p>
+    <p>Number of records<strong><?php echo (int)$earningsStats['total_earnings_records']; ?></strong></p>
+    <p>Average earning<strong><?php echo number_format((float)$earningsStats['average_earning'], 2); ?></strong></p>
+    <p>Highest earning<strong><?php echo number_format((float)$earningsStats['highest_earning'], 2); ?></strong></p>
+    <p>Lowest earning<strong><?php echo number_format((float)$earningsStats['lowest_earning'], 2); ?></strong></p>
+</div>
 
 <h2>Filter Earnings</h2>
 
-<form method="GET" action="earnings.php">
+<form method="GET" action="earnings.php" class="admin-filterbar">
 
     <label for="search">Search User</label>
 
@@ -479,7 +441,7 @@ if ($filter === 'custom') {
         >
     </div>
 
-    <button type="submit">Search / Apply Filter</button>
+    <button type="submit" class="admin-button">Search / Apply Filter</button>
 
     <a href="earnings.php">Clear Filter</a>
 
@@ -493,6 +455,7 @@ if ($filter === 'custom') {
     <?php echo number_format($totalEarningsUsers); ?>
 </p>
 
+<div class="admin-table-wrap">
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
@@ -596,10 +559,11 @@ if ($filter === 'custom') {
         <?php endif; ?>
     </tbody>
 </table>
+</div>
 
 <?php if ($totalUserPages > 1): ?>
 
-    <nav aria-label="User earnings pagination">
+    <nav class="admin-pagination" aria-label="User earnings pagination">
 
         <?php
         $userQueryParams = $queryParams;
@@ -708,9 +672,12 @@ $exportUrl = 'earnings.php?' . http_build_query($exportParams);
 
 <?php endif; ?>
 
-<h2>All Earnings Records</h2>
+<div class="admin-section-heading">
+    <div><h2>All earnings records</h2><p>Individual entries from every account.</p></div>
+</div>
 
-<table>
+<div class="admin-table-wrap">
+<table class="table">
     <thead>
         <tr>
             <th>ID</th>
@@ -812,10 +779,11 @@ $exportUrl = 'earnings.php?' . http_build_query($exportParams);
         <?php endif; ?>
     </tbody>
 </table>
+</div>
 
 <?php if ($totalPages > 1): ?>
 
-    <nav aria-label="Earnings pagination">
+    <nav class="admin-pagination" aria-label="Earnings pagination">
 
         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
 
@@ -841,4 +809,5 @@ $exportUrl = 'earnings.php?' . http_build_query($exportParams);
     </nav>
 
 <?php endif; ?>
+<?php require __DIR__ . '/layout-footer.php'; ?>
 

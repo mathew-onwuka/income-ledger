@@ -24,6 +24,7 @@ if ($userid <= 0) {
 }
 
 include "../classes/dbh.classes.php";
+include "../classes/activity-log.php";
 include "../classes/admin.classes.php";
 include "../classes/admin-contr.classes.php";
 
@@ -60,6 +61,15 @@ if (!$updated) {
     header("location: ../admin-user/users.php?error=invalidtransition");
     exit();
 }
+
+$audit = new AdminAudit();
+$audit->recordActivity(
+    $adminId,
+    $_SESSION["admin_uid"] ?? 'Administrator',
+    'user_' . $action,
+    'Updated account status for user ID ' . $userid . '.',
+    $userid
+);
 
 header("location: ../admin-user/users.php?error=none");
 exit();

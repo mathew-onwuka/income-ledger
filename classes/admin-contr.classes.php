@@ -42,6 +42,11 @@ class AdminContr extends Admin
         return $this->restoreUser($userid);
     }
 
+    public function saveUserDetails($userid, array $details)
+    {
+        return $this->updateUserDetails($userid, $details);
+    }
+
     public function getDateRange($filter, $startDate = null, $endDate = null)
     {
         switch ($filter) {

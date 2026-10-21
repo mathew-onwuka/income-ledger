@@ -1,3 +1,20 @@
+<?php
+require_once __DIR__ . '/classes/dbh.classes.php';
+require_once __DIR__ . '/classes/settings.php';
+
+$signupErrorMessages = [
+    'emptyinput' => 'Complete every required field.',
+    'invalidusername' => 'Use letters and numbers only for your username.',
+    'invalidemail' => 'Enter a valid email address.',
+    'passwordmismatch' => 'The passwords do not match.',
+    'usernameoremailtaken' => 'That username or email is already in use.',
+    'registrationclosed' => 'New account registration is currently paused.',
+];
+$errorCode = $_GET['error'] ?? '';
+$signupError = is_string($errorCode) ? ($signupErrorMessages[$errorCode] ?? '') : '';
+$registration = (new Settings())->getRegistrationStatus();
+$registrationClosed = $registration['available'] && $registration['status'] !== 'active';
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -212,6 +229,16 @@
 		background: rgba(255,255,255,0.06);
 		box-shadow: 0 0 0 4px rgba(212,175,122,0.14);
 	}
+	.form-notice{
+		margin: 0 0 18px;
+		padding: 12px 14px;
+		border: 1px solid rgba(242,122,122,0.3);
+		border-radius: 9px;
+		color: #ffc1c1;
+		background: rgba(242,122,122,0.08);
+		font-size: 13px;
+		line-height: 1.55;
+	}
 
 	.terms{
 		display: flex;
@@ -308,34 +335,41 @@
 			<h2>Create your account</h2>
 			<p class="sub">A few details and you're in.</p>
 
+			<?php if ($signupError !== ''): ?>
+				<div class="form-notice" role="alert"><?php echo htmlspecialchars($signupError, ENT_QUOTES, 'UTF-8'); ?></div>
+			<?php endif; ?>
+			<?php if ($registrationClosed): ?>
+				<div class="form-notice" role="status">Registration is paused by an administrator. You can still sign in to an existing account.</div>
+			<?php endif; ?>
+
 			<form method="post" action="includes/signup.inc.php">
 				<div class="field">
 					<label for="user">Username</label>
-					<input type="text" id="user" placeholder="Choose a username" name="uid" autocomplete="username">
+					<input type="text" id="user" placeholder="Choose a username" name="uid" autocomplete="username" <?php echo $registrationClosed ? 'disabled' : ''; ?>>
 				</div>
 
 				<div class="field">
 					<label for="email">Email</label>
-					<input type="text" id="email" placeholder="you@example.com" name="email" autocomplete="email">
+					<input type="text" id="email" placeholder="you@example.com" name="email" autocomplete="email" <?php echo $registrationClosed ? 'disabled' : ''; ?>>
 				</div>
 
 				<div class="field split">
 					<div>
 						<label for="password">Password</label>
-						<input type="password" id="password" placeholder="Create a password" name="pwd" autocomplete="new-password">
+						<input type="password" id="password" placeholder="Create a password" name="pwd" autocomplete="new-password" <?php echo $registrationClosed ? 'disabled' : ''; ?>>
 					</div>
 					<div>
 						<label for="password2">Re-enter</label>
-						<input type="password" id="password2" placeholder="Confirm password" name="pwdrepeat" autocomplete="new-password">
+						<input type="password" id="password2" placeholder="Confirm password" name="pwdrepeat" autocomplete="new-password" <?php echo $registrationClosed ? 'disabled' : ''; ?>>
 					</div>
 				</div>
 
 				<label class="terms">
-					<input type="checkbox">
+					<input type="checkbox" <?php echo $registrationClosed ? 'disabled' : ''; ?>>
 					<span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>
 				</label>
 
-				<input type="submit" class="btn-gold" value="Create Account">
+				<input type="submit" class="btn-gold" name="submit" value="Create Account" <?php echo $registrationClosed ? 'disabled' : ''; ?>>
 			</form>
 
 			<div class="divider">or</div>

@@ -231,7 +231,16 @@ if ($dateRange === null) {
         );
 }
 
+$page_title = 'User details';
+$page_description = 'Review account information and earnings for this user.';
 ?>
+<?php require __DIR__ . '/layout-header.php'; ?>
+
+<?php if (($_GET['updated'] ?? '') === '1'): ?>
+    <div class="alert alert-success" role="status">User profile updated.</div>
+<?php endif; ?>
+
+<section class="admin-panel admin-profile-panel">
 <h2>User's fullname:
     <?php
     echo htmlspecialchars(
@@ -273,7 +282,7 @@ if ($dateRange === null) {
 
 <p>
     Address:
-    <?php echo htmlspecialchars($user['address'] ?? ''); ?>
+    <?php echo htmlspecialchars($user['user_address'] ?? ''); ?>
 </p>
 
 <p>
@@ -283,7 +292,7 @@ if ($dateRange === null) {
 
 <p>
     State:
-    <?php echo htmlspecialchars($user['state'] ?? ''); ?>
+    <?php echo htmlspecialchars($user['user_state'] ?? ''); ?>
 </p>
 
 <p>
@@ -305,11 +314,14 @@ if ($dateRange === null) {
     Registered:
     <?php echo htmlspecialchars($user['created_at']); ?>
 </p>
+<a class="admin-button" href="edit-user.php?id=<?php echo (int)$userid; ?>"><i class="ti-pencil-alt"></i>&nbsp; Edit profile</a>
+</section>
 
 <!-- Date Range Filter  -->
 
 <h2>Earnings Summary</h2>
 
+<div class="admin-summary-grid">
 <p>
     Total Earnings:
     <?php
@@ -356,11 +368,12 @@ if ($dateRange === null) {
     );
     ?>
 </p>
+</div>
 
 
 <h2>User's Earnings</h2>
 
-<form method="GET" action="view-user.php">
+<form method="GET" action="view-user.php" class="admin-filterbar">
 
     <input
         type="hidden"
@@ -452,16 +465,17 @@ if ($dateRange === null) {
     </div>
 
 
-    <button type="submit">
+    <button type="submit" class="admin-button">
         Apply Filter
     </button>
 
-    <a href="view-user.php?id=<?php echo $userid; ?>">
+    <a class="admin-button admin-button--secondary" href="view-user.php?id=<?php echo $userid; ?>">
         Clear Filter
     </a>
 
 </form>
-<table>
+<div class="admin-table-wrap">
+<table class="table">
     <thead>
 
         <tr>
@@ -542,9 +556,10 @@ if ($dateRange === null) {
     </tbody>
 
 </table>
+</div>
 <?php if ($totalPages > 1): ?>
 
-    <div>
+    <nav class="admin-pagination" aria-label="User earnings pages">
 
         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
 
@@ -556,6 +571,7 @@ if ($dateRange === null) {
 
         <?php endfor; ?>
 
-    </div>
+    </nav>
 
 <?php endif; ?>
+<?php require __DIR__ . '/layout-footer.php'; ?>

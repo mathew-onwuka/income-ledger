@@ -513,6 +513,48 @@ class Admin extends Dbh
         return $user;
     }
 
+    protected function updateUserDetails($userid, array $details)
+    {
+        $pdo = $this->connect();
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        $duplicate = $pdo->prepare(
+            "SELECT users_id FROM users WHERE users_email = ? AND users_id <> ? LIMIT 1"
+        );
+        $duplicate->execute([$details['users_email'], (int)$userid]);
+        if ($duplicate->fetchColumn()) {
+            return 'duplicate_email';
+        }
+
+        try {
+            $stmt = $pdo->prepare(
+                "UPDATE users
+                 SET firstname = ?, lastname = ?, users_email = ?, phone = ?,
+                     user_address = ?, gender = ?, date_of_birth = ?, city = ?,
+                     user_state = ?, country = ?, postal_code = ?, updated_at = NOW()
+                 WHERE users_id = ?"
+            );
+            $stmt->execute([
+                $details['firstname'],
+                $details['lastname'],
+                $details['users_email'],
+                $details['phone'],
+                $details['user_address'],
+                $details['gender'] !== '' ? $details['gender'] : null,
+                $details['date_of_birth'] !== '' ? $details['date_of_birth'] : null,
+                $details['city'],
+                $details['user_state'],
+                $details['country'],
+                $details['postal_code'],
+                (int)$userid,
+            ]);
+
+            return 'updated';
+        } catch (PDOException $exception) {
+            return 'error';
+        }
+    }
+
     /*
     |--------------------------------------------------------------------------
     | USER EARNINGS STATISTICS

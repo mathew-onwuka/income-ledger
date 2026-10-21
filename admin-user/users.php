@@ -93,13 +93,11 @@ $statusActionError = is_string($statusActionErrorCode)
     ? ($statusActionErrors[$statusActionErrorCode] ?? null)
     : null;
 
+$page_title = 'User directory';
+$page_description = 'Find accounts, review account details, and manage user status.';
 ?>
 
-
-
-<!-- ==================================================
-     SEARCH AND FILTER
-================================================== -->
+<?php require __DIR__ . '/layout-header.php'; ?>
 
 <?php if ($statusActionError !== null): ?>
     <div class="alert alert-danger" role="alert">
@@ -107,81 +105,32 @@ $statusActionError = is_string($statusActionErrorCode)
     </div>
 <?php endif; ?>
 
-<div>
-
-    <!-- Search User -->
-
-    <form method="GET" action="users.php">
-
+<div class="admin-filterbar">
+    <form method="GET" action="users.php" role="search">
         <input
             type="text"
             name="search"
+            aria-label="Search users"
             placeholder="Search users..."
-            value="<?php echo htmlspecialchars($search); ?>"
+            value="<?php echo htmlspecialchars($search, ENT_QUOTES, 'UTF-8'); ?>"
         >
-
-        <button type="submit">
-            Search
-        </button>
-
+        <button type="submit"><i class="ti-search"></i>&nbsp; Search</button>
     </form>
-
-
-    <!-- Status Filter -->
 
     <form method="GET" action="users.php">
-
-        <select name="status">
-
-            <option value="">
-                All Users
-            </option>
-
-            <option
-                value="active"
-                <?php echo $status === 'active' ? 'selected' : ''; ?>
-            >
-                Active
-            </option>
-
-            <option
-                value="inactive"
-                <?php echo $status === 'inactive' ? 'selected' : ''; ?>
-            >
-                Inactive
-            </option>
-
-            <option
-                value="suspended"
-                <?php echo $status === 'suspended' ? 'selected' : ''; ?>
-            >
-                Suspended
-            </option>
-
-            <option
-                value="deleted"
-                <?php echo $status === 'deleted' ? 'selected' : ''; ?>
-            >
-                Deleted
-            </option>
-
+        <select name="status" aria-label="Filter users by status">
+            <option value="">All users</option>
+            <option value="active" <?php echo $status === 'active' ? 'selected' : ''; ?>>Active</option>
+            <option value="inactive" <?php echo $status === 'inactive' ? 'selected' : ''; ?>>Inactive</option>
+            <option value="suspended" <?php echo $status === 'suspended' ? 'selected' : ''; ?>>Suspended</option>
+            <option value="deleted" <?php echo $status === 'deleted' ? 'selected' : ''; ?>>Deleted</option>
         </select>
-
-        <button type="submit">
-            Filter
-        </button>
-
+        <button type="submit"><i class="ti-filter"></i>&nbsp; Filter</button>
     </form>
-
 </div>
 
-
-
-<!-- ==================================================
-     USERS TABLE
-================================================== -->
-
-<table>
+<div class="admin-table-wrap">
+<table class="table">
 
     <thead>
 
@@ -294,11 +243,13 @@ $statusActionError = is_string($statusActionErrorCode)
                     <!-- Account Status -->
 
                     <td>
-
-                        <?php echo htmlspecialchars(
-                            $user['account_status']
-                        ); ?>
-
+                        <?php
+                        $accountStatus = (string)($user['account_status'] ?? '');
+                        $statusClass = preg_replace('/[^a-z0-9_-]/i', '', strtolower($accountStatus));
+                        ?>
+                        <span class="admin-status-pill admin-status-pill--<?php echo htmlspecialchars($statusClass, ENT_QUOTES, 'UTF-8'); ?>">
+                            <?php echo htmlspecialchars($accountStatus, ENT_QUOTES, 'UTF-8'); ?>
+                        </span>
                     </td>
 
 
@@ -615,7 +566,7 @@ $statusActionError = is_string($statusActionErrorCode)
     </tbody>
 
 </table>
-
+</div>
 
 
 <!-- ==================================================
@@ -623,8 +574,7 @@ $statusActionError = is_string($statusActionErrorCode)
 ================================================== -->
 
 <?php if ($totalPages > 1): ?>
-
-    <div>
+    <nav class="admin-pagination" aria-label="User pages">
 
         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
 
@@ -638,14 +588,14 @@ $statusActionError = is_string($statusActionErrorCode)
 
             ?>
 
-            <a href="?<?php echo $query; ?>">
-
+            <a href="?<?php echo htmlspecialchars($query, ENT_QUOTES, 'UTF-8'); ?>"
+               <?php echo $page === $i ? 'aria-current="page"' : ''; ?>>
                 <?php echo $i; ?>
-
             </a>
 
         <?php endfor; ?>
 
-    </div>
-
+    </nav>
 <?php endif; ?>
+
+<?php require __DIR__ . '/layout-footer.php'; ?>
